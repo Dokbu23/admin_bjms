@@ -1,0 +1,157 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">System Administrator Profile</h2>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Manage administrative credentials, security parameters, and review active sessions</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl">
+        <!-- Left: Administrator Summary Card -->
+        <div class="jms-card p-6 lg:col-span-1 space-y-6">
+          <div class="text-center pb-6 border-b border-slate-200">
+            <div class="w-24 h-24 rounded-full bg-slate-900 text-amber-400 mx-auto flex items-center justify-center font-bold text-2xl border-4 border-amber-500 shadow-lg mb-3">
+              SA
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">{{ admin.name }}</h3>
+            <span class="inline-block px-3 py-0.5 mt-1 text-xs font-bold rounded-full bg-amber-100 text-amber-800 border border-amber-300 uppercase tracking-wider">
+              SYSTEM ADMINISTRATOR
+            </span>
+            <div class="mt-2 text-xs text-slate-500 font-mono">{{ admin.email }}</div>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Account Status:</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">
+                ACTIVE
+              </span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Last Login IP:</span>
+              <span class="font-mono text-slate-800 font-bold">{{ admin.last_login_ip }}</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Last Login Date:</span>
+              <span class="font-mono text-slate-700">{{formatDateTime admin.last_login_at}}</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-slate-500 font-medium">System Role:</span>
+              <span class="font-bold text-slate-800">Administrator (Root)</span>
+            </div>
+          </div>
+
+          <!-- Session Info Box -->
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs">
+            <span class="font-bold text-slate-700 block mb-1">Current Session Security</span>
+            <p class="text-slate-500">
+              Authenticated via HTTP-only cookie. Session protected by SHA-256 state tracking and automatic idle expiration.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Forms for Profile & Password -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Update Profile Details -->
+          <div class="jms-card p-6">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200">
+              Update Administrator Information
+            </h3>
+
+            <form method="POST" action="/profile" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Administrator Full Name <span class="text-rose-600">*</span></label>
+                  <input type="text" name="name" value="{{ admin.name }}" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Official Administrator Email <span class="text-rose-600">*</span></label>
+                  <input type="email" name="email" value="{{ admin.email }}" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Official Mobile / Direct Phone</label>
+                  <input type="text" name="phone" value="{{ admin.phone }}" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 flex justify-end">
+                <button type="submit" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded-lg shadow transition">
+                  Save Profile Details
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Change Administrator Password -->
+          <div class="jms-card p-6">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200 flex items-center justify-between">
+              <span>Change Security Password</span>
+              <span class="text-xs text-slate-400 font-normal">Bcrypt salted hashing</span>
+            </h3>
+
+            <form method="POST" action="/profile/password" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Current Password <span class="text-rose-600">*</span></label>
+                <input type="password" name="current_password" required placeholder="••••••••••••" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">New Password <span class="text-rose-600">*</span></label>
+                  <input type="password" name="new_password" required placeholder="Minimum 8 characters" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Confirm New Password <span class="text-rose-600">*</span></label>
+                  <input type="password" name="confirm_password" required placeholder="Re-type new password" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-slate-100 flex justify-end">
+                <button type="submit" class="px-5 py-2 bg-rose-700 hover:bg-rose-800 text-white text-xs font-bold rounded-lg shadow transition">
+                  Update Security Password
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Recent Login History -->
+          <div class="jms-card p-6">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 pb-2 border-b border-slate-200">
+              Recent Administrator Login Records
+            </h3>
+            <div class="space-y-2">
+              {{#each recentLogins}}
+              <div class="flex items-center justify-between text-xs p-2.5 rounded bg-slate-50 border border-slate-200">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span class="font-bold text-slate-800">{{ this.action }}</span>
+                  <span class="text-slate-500 font-mono">IP: {{ this.ip_address }}</span>
+                </div>
+                <span class="text-slate-400 font-mono">{{formatDateTime this.createdAt}}</span>
+              </div>
+              {{else}}
+              <p class="text-xs text-slate-500 text-center py-2">No prior login logs available.</p>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+</body>
+</html>
+

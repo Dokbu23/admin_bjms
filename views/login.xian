@@ -1,0 +1,98 @@
+{{> head}}
+<body class="bg-slate-900 min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-md w-full">
+    <!-- Header Emblem -->
+    <div class="text-center mb-6">
+      <div class="inline-flex w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 items-center justify-center shadow-xl border-2 border-amber-400 mb-3">
+        <svg class="w-9 h-9 text-slate-950 font-bold" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+        </svg>
+      </div>
+      <h1 class="text-xl font-black text-white tracking-wide uppercase">{{ systemName }}</h1>
+      <p class="text-xs font-semibold text-amber-400 uppercase tracking-widest mt-1">System Administrator Portal</p>
+      <p class="text-xs text-slate-400 mt-1">{{ facilityName }}</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-700/50 p-6 sm:p-8">
+      {{> toast}}
+
+      <div class="border-b border-slate-200 pb-4 mb-6">
+        <h2 class="text-lg font-bold text-slate-900">Administrator Sign In</h2>
+        <p class="text-xs text-slate-500 mt-1">Enter your authorized administrative credentials to access the correctional console.</p>
+      </div>
+
+      <form method="POST" action="/login" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Official Admin Email</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path></svg>
+            </span>
+            <input 
+              type="email" 
+              name="email" 
+              value="admin@jms.gov.ph"
+              placeholder="admin@jms.gov.ph" 
+              required 
+              class="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-slate-50"
+            />
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Secret Security Password</label>
+            <a href="/forgot-password" class="text-xs font-semibold text-amber-700 hover:text-amber-800 hover:underline">Forgot password?</a>
+          </div>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </span>
+            <input 
+              type="password" 
+              name="password" 
+              value="AdminPassword123!"
+              placeholder="••••••••••••" 
+              required 
+              class="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-slate-50"
+            />
+          </div>
+        </div>
+
+        <!-- Role Enforced Notice -->
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 flex items-start space-x-2">
+          <svg class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <div>
+            <span class="font-bold">System Administrator Exclusive:</span>
+            <span>Only authorized System Administrators can log in. Other jail personnel accounts cannot authenticate to this system.</span>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold rounded-lg shadow-md transition duration-150 flex items-center justify-center space-x-2 border border-slate-700"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+          <span>Authenticate as Administrator</span>
+        </button>
+      </form>
+
+      <!-- Pre-seeded Credentials Card -->
+      <div class="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-500">
+        <p class="font-semibold text-slate-700 mb-1">Default Seeded Administrator Credentials:</p>
+        <div class="bg-slate-100 p-2.5 rounded font-mono text-[11px] text-slate-800 space-y-0.5 border border-slate-200">
+          <div><span class="text-slate-500">Email:</span> admin@jms.gov.ph</div>
+          <div><span class="text-slate-500">Password:</span> AdminPassword123!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Footer -->
+    <div class="text-center mt-6 text-xs text-slate-500">
+      &copy; 2026 Republic of the Philippines &bull; Bureau of Jail Management and Penology<br/>
+      XianFire Framework &bull; All Access Attempts Logged & Audited
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+  <div class="px-4 sm:px-6 py-2.5 flex items-center justify-between">
+    <!-- Left: Facility branding & System Title -->
+    <div class="flex items-center space-x-3">
+      <!-- Mobile Sidebar Toggle -->
+      <button id="mobile-sidebar-toggle" onclick="document.getElementById('main-sidebar').classList.toggle('-translate-x-full')" class="md:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+
+      <div class="hidden sm:flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded bg-slate-900 flex items-center justify-center text-amber-400 font-bold text-sm shadow border border-amber-600">
+          <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-slate-900 tracking-wide uppercase">{{ facilityName }}</h1>
+          <p class="text-xs text-slate-500 font-medium">JMS Portal &bull; Facility Code: <span class="font-semibold text-slate-700">{{ facilityCode }}</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Real-time Clock, Notifications & Admin Menu -->
+    <div class="flex items-center space-x-4">
+      <!-- Live Clock -->
+      <div class="hidden lg:flex items-center space-x-2 px-3 py-1 bg-slate-100 rounded-md border border-slate-200 text-xs text-slate-600 font-mono">
+        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span id="jms-live-clock">Loading Time...</span>
+      </div>
+
+      <!-- Notification Center Dropdown / Link -->
+      <a href="/notifications" class="relative p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition" title="Notification Center">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+        </svg>
+        {{#if (gt unreadNotificationCount 0)}}
+        <span class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-600 text-[10px] font-bold text-white ring-2 ring-white animate-pulse">
+          {{ unreadNotificationCount }}
+        </span>
+        {{/if}}
+      </a>
+
+      <!-- Admin Profile Pill -->
+      <div class="relative flex items-center space-x-3 pl-3 border-l border-slate-200">
+        <a href="/profile" class="flex items-center space-x-2.5 group">
+          <div class="w-8 h-8 rounded-full bg-slate-800 text-amber-400 font-bold text-xs flex items-center justify-center border-2 border-amber-500 shadow-sm">
+            SA
+          </div>
+          <div class="hidden sm:block text-left">
+            <p class="text-xs font-bold text-slate-800 group-hover:text-blue-700 leading-tight">{{ currentUser.name }}</p>
+            <p class="text-[11px] font-semibold text-amber-700 uppercase tracking-wider">System Administrator</p>
+          </div>
+        </a>
+
+        <!-- Quick Logout -->
+        <a href="/logout" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition" title="Sign Out">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+

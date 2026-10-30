@@ -1,0 +1,220 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">PDL Records Management</h2>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Persons Deprived of Liberty administrative roster, detention status monitoring, and legal records</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Export Dropdown -->
+          <div class="relative inline-block text-left" id="export-dropdown-wrapper">
+            <button onclick="document.getElementById('export-menu').classList.toggle('hidden')" class="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold rounded-lg shadow-sm transition inline-flex items-center space-x-1.5">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              <span>Export Roster</span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div id="export-menu" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20 py-1">
+              <a href="/pdl/export/pdf" target="_blank" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-100 flex items-center space-x-2">
+                <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                <span>Export as PDF / Print</span>
+              </a>
+              <a href="/pdl/export/excel" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-100 flex items-center space-x-2">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span>Export as Excel (.xls)</span>
+              </a>
+              <a href="/pdl/export/csv" class="block px-4 py-2 text-xs text-slate-700 hover:bg-slate-100 flex items-center space-x-2">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <span>Export as CSV</span>
+              </a>
+            </div>
+          </div>
+
+          <a href="/pdl/create" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded-lg shadow transition inline-flex items-center space-x-1.5 border border-slate-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            <span>Register New PDL</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Filters & Multi-Search -->
+      <div class="jms-card p-4">
+        <form method="GET" action="/pdl" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <!-- Search -->
+          <div class="relative lg:col-span-2">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </span>
+            <input 
+              type="text" 
+              name="search" 
+              value="{{ search }}" 
+              placeholder="Search name, PDL ID (e.g. PDL-2026-0001), case no..." 
+              class="w-full pl-9 pr-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50"
+            />
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <select name="status" onchange="this.form.submit()" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50 text-slate-700">
+              <option value="">All Detention Statuses</option>
+              {{#each statuses}}
+              <option value="{{ this }}" {{#if (eq ../selectedStatus this)}}selected{{/if}}>{{ this }}</option>
+              {{/each}}
+            </select>
+          </div>
+
+          <!-- Risk Level Filter -->
+          <div>
+            <select name="risk" onchange="this.form.submit()" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50 text-slate-700">
+              <option value="">All Risk Levels</option>
+              {{#each riskLevels}}
+              <option value="{{ this }}" {{#if (eq ../selectedRisk this)}}selected{{/if}}>{{ this }}</option>
+              {{/each}}
+            </select>
+          </div>
+
+          <!-- Cell Block Filter -->
+          <div class="flex items-center space-x-2">
+            <select name="cell_block" onchange="this.form.submit()" class="flex-1 px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50 text-slate-700">
+              <option value="">All Cell Blocks</option>
+              {{#each cellBlocks}}
+              <option value="{{ this }}" {{#if (eq ../selectedBlock this)}}selected{{/if}}>{{ this }}</option>
+              {{/each}}
+            </select>
+            <a href="/pdl" class="py-1.5 px-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-300 transition" title="Clear Filters">
+              Reset
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- PDL Data Table -->
+      <div class="jms-card overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            PDL Records Roster ({{ totalCount }} Inmates Recorded)
+          </span>
+          <span class="text-xs text-slate-500">Page {{ currentPage }} of {{ totalPages }}</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="jms-table">
+            <thead>
+              <tr>
+                <th>PDL Identification</th>
+                <th>Full Name & Alias</th>
+                <th>Offense Charge & Case</th>
+                <th>Risk Classification</th>
+                <th>Cell Assignment</th>
+                <th>Admission Date</th>
+                <th>Detention Status</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each pdlList}}
+              <tr>
+                <td class="font-mono font-bold text-slate-900 whitespace-nowrap">
+                  <a href="/pdl/{{ this.id }}" class="hover:text-blue-700 hover:underline">
+                    {{ this.pdl_number }}
+                  </a>
+                </td>
+                <td>
+                  <a href="/pdl/{{ this.id }}" class="font-bold text-slate-900 hover:text-blue-700">
+                    {{ this.last_name }}, {{ this.first_name }} {{ this.middle_name }}
+                  </a>
+                  {{#if this.alias}}
+                  <span class="block text-[11px] text-slate-500 italic">alias "{{ this.alias }}"</span>
+                  {{/if}}
+                </td>
+                <td class="max-w-xs">
+                  <div class="text-xs font-medium text-slate-800 truncate" title="{{ this.offense_charge }}">
+                    {{ this.offense_charge }}
+                  </div>
+                  <div class="text-[11px] text-slate-500 font-mono">{{ this.case_number }} &bull; {{ this.court_branch }}</div>
+                </td>
+                <td>
+                  {{riskBadge this.risk_level}}
+                </td>
+                <td class="text-xs font-semibold text-slate-700 whitespace-nowrap">
+                  {{ this.cell_block }}
+                </td>
+                <td class="text-xs text-slate-600 font-mono whitespace-nowrap">
+                  {{formatDate this.admission_date}}
+                </td>
+                <td>
+                  {{statusBadge this.detention_status}}
+                </td>
+                <td class="text-right whitespace-nowrap">
+                  <div class="inline-flex items-center space-x-1.5">
+                    <a href="/pdl/{{ this.id }}" class="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded" title="View Dossier">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </a>
+                    <a href="/pdl/{{ this.id }}/edit" class="p-1.5 text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded" title="Edit Record">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </a>
+
+                    <!-- Archive / Delete Form -->
+                    <form method="POST" action="/pdl/{{ this.id }}/delete" class="inline" onsubmit="return confirm('Archive/Soft-delete PDL record {{ this.pdl_number }} ({{ this.first_name }} {{ this.last_name }})?');">
+                      <button type="submit" class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded" title="Archive Record">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {{else}}
+              <tr>
+                <td colspan="8" class="text-center py-10 text-slate-500">
+                  <p class="text-sm font-semibold">No PDL records match the current filter or search criteria.</p>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        {{#if (gt totalPages 1)}}
+        <div class="px-5 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+          <div class="text-xs text-slate-500">
+            Showing page {{ currentPage }} of {{ totalPages }}
+          </div>
+          <div class="flex items-center space-x-1">
+            {{#if hasPrev}}
+            <a href="/pdl?page={{ prevPage }}&search={{ search }}&status={{ selectedStatus }}&risk={{ selectedRisk }}&cell_block={{ selectedBlock }}" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100">Previous</a>
+            {{/if}}
+            {{#if hasNext}}
+            <a href="/pdl?page={{ nextPage }}&search={{ search }}&status={{ selectedStatus }}&risk={{ selectedRisk }}&cell_block={{ selectedBlock }}" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100">Next</a>
+            {{/if}}
+          </div>
+        </div>
+        {{/if}}
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+
+  <script>
+    // Close dropdown on click outside
+    document.addEventListener("click", (e) => {
+      const wrapper = document.getElementById("export-dropdown-wrapper");
+      const menu = document.getElementById("export-menu");
+      if (wrapper && menu && !wrapper.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,159 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Administrative Reports & Intelligence</h2>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Government-standard compliance, population censuses, and operational audit reports</p>
+        </div>
+      </div>
+
+      <!-- 6 Administrative Reports Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 1. PDL Population Report -->
+        <div class="jms-card p-6 flex flex-col justify-between hover:border-slate-400 transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900">1. PDL Population Report</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Comprehensive demographic census, risk level categorizations, cell block allocations, and detention status breakdown.
+            </p>
+            <div class="mt-3 text-[11px] font-mono text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+              Total Recorded: <strong class="text-slate-900">{{ counts.totalPdl }}</strong> Inmates
+            </div>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">PDF &bull; Excel &bull; CSV</span>
+            <a href="/reports/pdl-population" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded shadow transition">
+              Generate Report &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- 2. PDL Admission Report -->
+        <div class="jms-card p-6 flex flex-col justify-between hover:border-slate-400 transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900">2. PDL Admission Report</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Intake records within specified date ranges, court commitment orders, offenses charged, and intake recording officers.
+            </p>
+            <div class="mt-3 text-[11px] font-mono text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+              Range filter enabled &bull; Court docket details
+            </div>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">PDF &bull; Excel &bull; CSV</span>
+            <a href="/reports/pdl-admission" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded shadow transition">
+              Generate Report &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- 3. PDL Release Report -->
+        <div class="jms-card p-6 flex flex-col justify-between hover:border-slate-400 transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900">3. PDL Release Report</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Discharges, court releases, bail bonds, prison transfers, and sentence completions with judicial release orders.
+            </p>
+            <div class="mt-3 text-[11px] font-mono text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+              Release date tracking &bull; Legal discharge reasons
+            </div>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">PDF &bull; Excel &bull; CSV</span>
+            <a href="/reports/pdl-release" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded shadow transition">
+              Generate Report &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- 4. Personnel Account Report -->
+        <div class="jms-card p-6 flex flex-col justify-between hover:border-slate-400 transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900">4. Personnel Account Report</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Jail staffing roster, rank distributions, official officer categories, account statuses, and activity timestamps.
+            </p>
+            <div class="mt-3 text-[11px] font-mono text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+              Staff Strength: <strong class="text-slate-900">{{ counts.totalPersonnel }}</strong> Personnel
+            </div>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">PDF &bull; Excel &bull; CSV</span>
+            <a href="/reports/personnel-accounts" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded shadow transition">
+              Generate Report &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- 5. Audit Trail Report -->
+        <div class="jms-card p-6 flex flex-col justify-between hover:border-slate-400 transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900">5. Audit Trail Report</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Security audit logs, login histories, administrative interventions, IP addresses, and state modification diffs.
+            </p>
+            <div class="mt-3 text-[11px] font-mono text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+              Recorded Events: <strong class="text-slate-900">{{ counts.totalAuditLogs }}</strong> Events
+            </div>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">PDF &bull; Excel &bull; CSV</span>
+            <a href="/reports/audit-trail" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded shadow transition">
+              Generate Report &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- 6. Database Backup Report -->
+        <div class="jms-card p-6 flex flex-col justify-between hover:border-slate-400 transition">
+          <div>
+            <div class="w-10 h-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+            </div>
+            <h3 class="text-base font-bold text-slate-900">6. Database Backup Report</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+              Chronological ledger of database snapshots, archive byte sizes, execution statuses, and disaster recovery restorations.
+            </p>
+            <div class="mt-3 text-[11px] font-mono text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+              Snapshot Count: <strong class="text-slate-900">{{ counts.totalBackups }}</strong> Snapshots
+            </div>
+          </div>
+          <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-slate-400">PDF &bull; Excel &bull; CSV</span>
+            <a href="/reports/database-backup" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded shadow transition">
+              Generate Report &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+</body>
+</html>
+

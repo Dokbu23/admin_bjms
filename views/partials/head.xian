@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} - Jail Management System</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for Administrative Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom Government Theme Stylesheet -->
+  <link rel="stylesheet" href="/css/jms-admin.css">
+  <script src="/js/jms-chart.js" defer></script>
+  <style>
+    /* Tailwind Config Enhancements */
+    .bg-jms-navy { background-color: #0f172a; }
+    .bg-jms-slate { background-color: #1e293b; }
+    .text-jms-gold { color: #f59e0b; }
+    .border-jms-gold { border-color: #d97706; }
+  </style>
+</head>

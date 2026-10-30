@@ -1,0 +1,222 @@
+
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Database Backup & Disaster Recovery</h2>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Secure, authenticated snapshots stored outside public web directory with integrity verification</p>
+        </div>
+        <div>
+          <button onclick="openModal('backup-modal')" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded-lg shadow transition inline-flex items-center space-x-1.5 border border-slate-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <span>Generate Database Backup Now</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Security Advisory Banner -->
+      <div class="p-4 bg-slate-900 text-slate-200 rounded-lg shadow-sm border border-slate-800 flex items-start space-x-3">
+        <div class="p-1.5 bg-amber-500 text-slate-950 font-bold rounded mt-0.5 flex-shrink-0">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+        </div>
+        <div class="text-xs space-y-1">
+          <p class="font-bold text-white text-sm">Protected Storage & Integrity Protocol</p>
+          <p class="text-slate-300">
+            All SQL database archives are encrypted and isolated in <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300 font-mono">myAdmin/storage/backups/</code> outside of the public HTTP document root. Restoration requires typing verification and creates an indelible record in the immutable system audit trail.
+          </p>
+        </div>
+      </div>
+
+      <!-- Backups Data Table -->
+      <div class="jms-card overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            Backup Archives & Snapshot History ({{ backups.length }} Records)
+          </span>
+          <span class="text-xs text-slate-500 font-medium">Target: MySQL / myAdmin</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="jms-table">
+            <thead>
+              <tr>
+                <th>Archive Filename</th>
+                <th>Type</th>
+                <th>File Size</th>
+                <th>Date & Time Created</th>
+                <th>Initiated By</th>
+                <th>Status</th>
+                <th>Last Restored</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each backups}}
+              <tr>
+                <td>
+                  <div class="font-mono text-xs font-bold text-slate-900 flex items-center space-x-2">
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                    <span>{{ this.filename }}</span>
+                  </div>
+                  {{#if this.notes}}
+                  <span class="text-[11px] text-slate-500 block truncate max-w-sm">{{ this.notes }}</span>
+                  {{/if}}
+                </td>
+                <td>
+                  <span class="inline-flex px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
+                    {{ this.backup_type }}
+                  </span>
+                </td>
+                <td class="font-mono text-xs font-bold text-slate-700">
+                  {{formatBytes this.file_size}}
+                </td>
+                <td class="text-xs text-slate-600 font-mono">
+                  {{formatDateTime this.createdAt}}
+                </td>
+                <td class="text-xs text-slate-700 font-medium">
+                  {{ this.created_by }}
+                </td>
+                <td>
+                  {{statusBadge this.status}}
+                </td>
+                <td class="text-xs text-slate-500 font-mono">
+                  {{#if this.restored_at}}
+                    {{formatDateTime this.restored_at}}
+                  {{else}}
+                    <span class="text-slate-400 italic">Never</span>
+                  {{/if}}
+                </td>
+                <td class="text-right whitespace-nowrap">
+                  <div class="inline-flex items-center space-x-1.5">
+                    <!-- Secure Download -->
+                    <a href="/backups/{{ this.id }}/download" class="p-1.5 text-blue-700 hover:text-blue-900 hover:bg-blue-50 rounded" title="Download .SQL Archive">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    </a>
+
+                    <!-- Restore Trigger Button (Opens Confirmation Modal) -->
+                    <button onclick="openRestoreModal('{{ this.id }}', '{{ this.filename }}')" class="p-1.5 text-amber-600 hover:text-amber-800 hover:bg-amber-50 rounded" title="Restore Database">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+
+                    <!-- Delete Backup -->
+                    <form method="POST" action="/backups/{{ this.id }}/delete" class="inline" onsubmit="return confirm('Permanently delete backup {{ this.filename }}?');">
+                      <button type="submit" class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded" title="Delete Archive">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {{else}}
+              <tr>
+                <td colspan="8" class="text-center py-10 text-slate-500">
+                  <p class="text-sm font-semibold">No backup snapshots recorded yet.</p>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+
+  <!-- Generate Backup Modal -->
+  <div id="backup-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-6">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+        <h3 class="text-base font-bold text-slate-900">Create New Database Backup</h3>
+        <button onclick="closeModal('backup-modal')" class="text-slate-400 hover:text-slate-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <form method="POST" action="/backups/create" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Backup Trigger Type</label>
+          <select name="backup_type" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white">
+            <option value="Manual">Manual Administrative Snapshot</option>
+            <option value="Scheduled">Scheduled Maintenance Snapshot</option>
+            <option value="System">System Baseline Pre-Migration</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Administrative Notes</label>
+          <textarea name="notes" rows="2" placeholder="e.g. Pre-upgrade backup or monthly compliance archive" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white"></textarea>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeModal('backup-modal')" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded-lg shadow">Generate Archive</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Restore Confirmation Modal (Requires typing 'RESTORE') -->
+  <div id="restore-modal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl border border-rose-200 max-w-lg w-full p-6">
+      <div class="flex items-center space-x-3 text-rose-600 pb-3 border-b border-rose-100 mb-4">
+        <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Database Overwrite Confirmation</h3>
+          <p class="text-xs text-rose-600 font-semibold">Critical Administrative Action</p>
+        </div>
+      </div>
+
+      <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+        You are about to restore the database from snapshot: <strong id="restore-target-filename" class="font-mono text-slate-900 block mt-1 p-2 bg-slate-100 rounded border border-slate-200"></strong>
+      </p>
+
+      <div class="bg-amber-50 p-3 rounded-lg border border-amber-200 text-amber-900 text-xs mb-4">
+        <strong>WARNING:</strong> This action will overwrite existing MySQL database tables with the state preserved in this backup. All changes made after this backup date will be replaced.
+      </div>
+
+      <form id="restore-form" method="POST" action="" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">
+            Type <span class="font-mono font-bold text-rose-600 uppercase">RESTORE</span> to confirm:
+          </label>
+          <input 
+            type="text" 
+            name="confirmation" 
+            id="restore-confirmation-input" 
+            required 
+            placeholder="RESTORE" 
+            autocomplete="off"
+            class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+          />
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex items-center justify-end space-x-2">
+          <button type="button" onclick="closeModal('restore-modal')" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-50">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-rose-700 hover:bg-rose-800 text-white text-xs font-bold rounded-lg shadow">Confirm & Restore Database</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openRestoreModal(backupId, filename) {
+      document.getElementById("restore-target-filename").innerText = filename;
+      document.getElementById("restore-form").action = "/backups/" + backupId + "/restore";
+      document.getElementById("restore-confirmation-input").value = "";
+      openModal("restore-modal");
+    }
+  </script>
+</body>
+</html>

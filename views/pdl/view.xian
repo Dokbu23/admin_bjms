@@ -1,0 +1,198 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 gap-4">
+        <div>
+          <div class="flex items-center space-x-2 text-xs text-slate-500 mb-1">
+            <a href="/pdl" class="hover:text-blue-600">PDL Records</a>
+            <span>&rsaquo;</span>
+            <span class="text-slate-800 font-semibold font-mono">{{ pdl.pdl_number }}</span>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">
+            {{ pdl.last_name }}, {{ pdl.first_name }} {{ pdl.middle_name }}
+          </h2>
+          <p class="text-xs text-slate-500 font-medium">PDL ID: <span class="font-mono font-bold text-slate-900">{{ pdl.pdl_number }}</span> &bull; Case: <span class="font-mono text-slate-700 font-bold">{{ pdl.case_number }}</span></p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <a href="/pdl" class="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-50">&larr; Back to Roster</a>
+          <button onclick="window.print()" class="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-50 inline-flex items-center space-x-1 shadow-sm">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            <span>Print Dossier</span>
+          </button>
+          <a href="/pdl/{{ pdl.id }}/edit" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded-lg shadow-sm transition inline-flex items-center space-x-1 border border-slate-700">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+            <span>Edit Record</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left: Intake Card & Biometrics Dossier -->
+        <div class="jms-card p-6 lg:col-span-1 space-y-6">
+          <div class="text-center pb-6 border-b border-slate-200">
+            <!-- Inmate Badge / Photo Placeholder -->
+            <div class="w-28 h-32 rounded-lg bg-slate-800 text-amber-400 mx-auto flex flex-col items-center justify-center border-2 border-slate-700 shadow-inner mb-3">
+              <svg class="w-12 h-12 text-slate-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              <span class="text-[10px] font-mono font-bold tracking-wider text-amber-400">{{ pdl.pdl_number }}</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900">{{ pdl.last_name }}, {{ pdl.first_name }} {{ pdl.middle_name }}</h3>
+            {{#if pdl.alias}}
+            <p class="text-xs text-slate-500 italic mt-0.5">Known Alias: "{{ pdl.alias }}"</p>
+            {{/if}}
+
+            <div class="mt-3 flex items-center justify-center space-x-2">
+              {{riskBadge pdl.risk_level}}
+              {{statusBadge pdl.detention_status}}
+            </div>
+          </div>
+
+          <!-- Quick Specs -->
+          <div class="space-y-3 text-xs">
+            <div class="flex items-center justify-between py-1 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Cell Assignment:</span>
+              <span class="font-bold text-slate-900">{{ pdl.cell_block }}</span>
+            </div>
+            <div class="flex items-center justify-between py-1 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Admission Date:</span>
+              <span class="font-mono font-bold text-slate-800">{{formatDate pdl.admission_date}}</span>
+            </div>
+            <div class="flex items-center justify-between py-1 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Gender / Civil Status:</span>
+              <span class="text-slate-800">{{ pdl.gender }} / {{ pdl.civil_status }}</span>
+            </div>
+            <div class="flex items-center justify-between py-1 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Birthdate:</span>
+              <span class="text-slate-800">{{formatDate pdl.date_of_birth}}</span>
+            </div>
+            <div class="flex items-center justify-between py-1 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Nationality:</span>
+              <span class="text-slate-800">{{ pdl.nationality }}</span>
+            </div>
+            {{#if pdl.release_date}}
+            <div class="flex items-center justify-between py-1 bg-emerald-50 px-2 rounded border border-emerald-200">
+              <span class="text-emerald-800 font-medium">Release Date:</span>
+              <span class="font-mono font-bold text-emerald-900">{{formatDate pdl.release_date}}</span>
+            </div>
+            {{/if}}
+          </div>
+
+          <!-- Archive / Soft Delete Action -->
+          <div class="pt-4 border-t border-slate-200">
+            <form method="POST" action="/pdl/{{ pdl.id }}/delete" onsubmit="return confirm('Archive this PDL record? The record will be soft-deleted.');">
+              <button type="submit" class="w-full py-2 px-3 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition flex items-center justify-center space-x-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                <span>Archive / Soft Delete Record</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Legal, Court & Health Details -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Legal & Case Information -->
+          <div class="jms-card p-6">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200">
+              Legal Commitment & Court Branch Information
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div class="sm:col-span-2">
+                <span class="text-slate-500 font-medium block">Criminal Offense / Formal Charge</span>
+                <span class="text-sm font-bold text-slate-900 mt-0.5 block">{{ pdl.offense_charge }}</span>
+              </div>
+
+              <div>
+                <span class="text-slate-500 font-medium block">Case Docket Number</span>
+                <span class="text-sm font-mono font-bold text-slate-900">{{ pdl.case_number }}</span>
+              </div>
+
+              <div>
+                <span class="text-slate-500 font-medium block">Court Branch & Jurisdiction</span>
+                <span class="text-sm font-semibold text-slate-800">{{ pdl.court_branch }}</span>
+              </div>
+
+              {{#if pdl.release_reason}}
+              <div class="sm:col-span-2 bg-emerald-50 p-3 rounded-lg border border-emerald-200">
+                <span class="text-emerald-900 font-bold block mb-1">Discharge / Release Order Details</span>
+                <p class="text-xs text-emerald-800">{{ pdl.release_reason }} (Released on: {{formatDate pdl.release_date}})</p>
+              </div>
+              {{/if}}
+            </div>
+          </div>
+
+          <!-- Medical, Contacts & Remarks -->
+          <div class="jms-card p-6">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200">
+              Address, Emergency & Health Status
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <span class="text-slate-500 font-medium block">Permanent Address</span>
+                <span class="text-xs font-semibold text-slate-800">{{ pdl.address }}</span>
+              </div>
+
+              <div>
+                <span class="text-slate-500 font-medium block">Emergency Contact</span>
+                <span class="text-xs font-semibold text-slate-800">{{ pdl.emergency_contact_name }} &bull; {{ pdl.emergency_contact_phone }}</span>
+              </div>
+
+              <div class="sm:col-span-2 bg-amber-50/50 p-3 rounded border border-amber-200/60">
+                <span class="text-amber-900 font-bold block mb-1">Medical Conditions & Infirmary Notes</span>
+                <p class="text-xs text-slate-700">{{ pdl.medical_conditions }}</p>
+              </div>
+
+              <div class="sm:col-span-2 bg-slate-50 p-3 rounded border border-slate-200">
+                <span class="text-slate-500 font-medium block mb-1">Intake Remarks & Custody Protocol</span>
+                <p class="text-xs text-slate-700 leading-relaxed">{{ pdl.remarks }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audit Trail for this PDL -->
+          <div class="jms-card p-6">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200">
+              Audit History for Inmate {{ pdl.pdl_number }}
+            </h3>
+
+            <div class="space-y-3">
+              {{#each auditTrail}}
+              <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-start justify-between">
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 text-amber-400">
+                      {{ this.action }}
+                    </span>
+                    <span class="text-xs font-bold text-slate-800">{{ this.description }}</span>
+                  </div>
+                  <div class="text-[11px] text-slate-500 mt-1">
+                    Recorded by <strong>{{ this.user_name }}</strong> &bull; IP: {{ this.ip_address }}
+                  </div>
+                </div>
+                <span class="text-[11px] text-slate-400 font-mono">{{formatDateTime this.createdAt}}</span>
+              </div>
+              {{else}}
+              <p class="text-xs text-slate-500 text-center py-4">Initial intake record created.</p>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+</body>
+</html>
+

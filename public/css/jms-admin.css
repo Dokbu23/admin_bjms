@@ -1,0 +1,121 @@
+/*
+  Jail Management System (JMS) - System Administrator Portal
+  Government Theme Stylesheet
+*/
+
+:root {
+  --jms-navy-dark: #09121f;
+  --jms-navy: #0f172a;
+  --jms-navy-light: #1e293b;
+  --jms-slate: #334155;
+  --jms-slate-light: #475569;
+  --jms-gold: #d97706;
+  --jms-gold-light: #f59e0b;
+  --jms-gold-muted: #b45309;
+  --jms-gold-bg: #fef3c7;
+  --jms-bg: #f8fafc;
+  --jms-surface: #ffffff;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--jms-bg);
+  color: #1e293b;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Sidebar Custom Scrollbar */
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* Government Crest & Badge Details */
+.jms-badge-gold {
+  background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+  color: #ffffff;
+}
+
+.jms-header-gradient {
+  background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+}
+
+.jms-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.2s ease-in-out;
+}
+.jms-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+}
+
+/* Data Table Styling */
+.jms-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.jms-table th {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+.jms-table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+.jms-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Print Stylesheet for Reports */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  .no-print, nav, aside, footer, .sidebar, .btn-print-hide {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .jms-card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .jms-table th {
+    background-color: #e2e8f0 !important;
+    color: #000000 !important;
+  }
+  @page {
+    margin: 1.5cm;
+    size: landscape;
+  }
+}
+

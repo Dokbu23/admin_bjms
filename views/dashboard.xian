@@ -1,0 +1,372 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <!-- Page Header with Date Filter -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">System Administrator Dashboard</h2>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Centralized operational oversight, population analytics, and security command</p>
+        </div>
+
+        <!-- Date Filter Control -->
+        <form method="GET" action="/dashboard" class="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-lg border border-slate-300 shadow-sm">
+          <label class="text-xs font-semibold text-slate-600 flex items-center">
+            <svg class="w-4 h-4 mr-1 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+            Scope:
+          </label>
+          <select name="filter" onchange="this.form.submit()" class="text-xs font-semibold text-slate-800 bg-transparent focus:outline-none cursor-pointer">
+            <option value="this_year" {{#if (eq filter 'this_year')}}selected{{/if}}>Current Year (2026)</option>
+            <option value="30_days" {{#if (eq filter '30_days')}}selected{{/if}}>Last 30 Days</option>
+            <option value="90_days" {{#if (eq filter '90_days')}}selected{{/if}}>Last 90 Days</option>
+            <option value="all_time" {{#if (eq filter 'all_time')}}selected{{/if}}>All Time Records</option>
+          </select>
+        </form>
+      </div>
+
+      <!-- 6 EXECUTIVE DASHBOARD CARDS (Real MySQL Queries) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <!-- 1. Total PDL -->
+        <div class="jms-card p-4 border-l-4 border-slate-900">
+          <div class="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">
+            <span>Total PDL</span>
+            <div class="p-1.5 bg-slate-100 rounded text-slate-800">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-black text-slate-900">{{ stats.totalPdl }}</div>
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">All active roster entries</div>
+        </div>
+
+        <!-- 2. Currently Detained PDL -->
+        <div class="jms-card p-4 border-l-4 border-blue-600">
+          <div class="flex items-center justify-between text-blue-700 text-xs font-bold uppercase tracking-wider mb-2">
+            <span>Currently Detained</span>
+            <div class="p-1.5 bg-blue-50 rounded text-blue-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-black text-blue-900">{{ stats.detainedPdl }}</div>
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">Detained & on trial status</div>
+        </div>
+
+        <!-- 3. Newly Registered PDL -->
+        <div class="jms-card p-4 border-l-4 border-amber-500">
+          <div class="flex items-center justify-between text-amber-700 text-xs font-bold uppercase tracking-wider mb-2">
+            <span>Newly Registered</span>
+            <div class="p-1.5 bg-amber-50 rounded text-amber-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-black text-amber-900">{{ stats.newlyRegisteredPdl }}</div>
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">Admitted this calendar month</div>
+        </div>
+
+        <!-- 4. Released PDL -->
+        <div class="jms-card p-4 border-l-4 border-emerald-600">
+          <div class="flex items-center justify-between text-emerald-700 text-xs font-bold uppercase tracking-wider mb-2">
+            <span>Released PDL</span>
+            <div class="p-1.5 bg-emerald-50 rounded text-emerald-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-black text-emerald-900">{{ stats.releasedPdl }}</div>
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">Court released / bail granted</div>
+        </div>
+
+        <!-- 5. Total Personnel -->
+        <div class="jms-card p-4 border-l-4 border-purple-600">
+          <div class="flex items-center justify-between text-purple-700 text-xs font-bold uppercase tracking-wider mb-2">
+            <span>Total Personnel</span>
+            <div class="p-1.5 bg-purple-50 rounded text-purple-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-black text-purple-900">{{ stats.totalPersonnel }}</div>
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">5 Personnel Categories</div>
+        </div>
+
+        <!-- 6. Pending Actions -->
+        <div class="jms-card p-4 border-l-4 border-rose-600">
+          <div class="flex items-center justify-between text-rose-700 text-xs font-bold uppercase tracking-wider mb-2">
+            <span>Pending Actions</span>
+            <div class="p-1.5 bg-rose-50 rounded text-rose-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-black text-rose-900">{{ stats.pendingActions }}</div>
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">{{ stats.lockedPersonnelCount }} locked &bull; {{ stats.unreadAlertsCount }} alerts</div>
+        </div>
+      </div>
+
+      <!-- 4 INTERACTIVE CHARTS (All Real Data from MySQL) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Chart 1: Monthly PDL Registration -->
+        <div class="jms-card p-5">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Monthly PDL Registration</h3>
+              <p class="text-xs text-slate-500">Intake admissions trend over calendar months</p>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-700 rounded border border-slate-200">MySQL Monthly Group</span>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="monthlyAdmissionChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Admission vs Release Comparison -->
+        <div class="jms-card p-5">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Admissions & Releases Statistics</h3>
+              <p class="text-xs text-slate-500">Comparative intake vs release discharge frequency</p>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-700 rounded border border-slate-200">Comparison Bar</span>
+          </div>
+          <div class="h-64 relative">
+            <canvas id="admissionReleaseChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: PDL Population Trends by Status -->
+        <div class="jms-card p-5">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">PDL Population Breakdown</h3>
+              <p class="text-xs text-slate-500">Distribution by current detention status</p>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-700 rounded border border-slate-200">Status Distribution</span>
+          </div>
+          <div class="h-64 relative flex items-center justify-center">
+            <canvas id="populationTrendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: Personnel Statistics by Department/Category -->
+        <div class="jms-card p-5">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Personnel Account Statistics</h3>
+              <p class="text-xs text-slate-500">Headcount by official custodial & medical category</p>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-bold bg-slate-100 text-slate-700 rounded border border-slate-200">5 Categories</span>
+          </div>
+          <div class="h-64 relative flex items-center justify-center">
+            <canvas id="personnelChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITIES & ACTIONS (2 Column Layout) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent System Activities (From Audit Logs) -->
+        <div class="jms-card p-5">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Recent System Activities</h3>
+              <p class="text-xs text-slate-500">Continuous audit trail telemetry</p>
+            </div>
+            <a href="/audit-logs" class="text-xs font-semibold text-blue-700 hover:text-blue-900">View All Logs &rarr;</a>
+          </div>
+
+          <div class="space-y-3">
+            {{#each recentActivities}}
+            <div class="flex items-start space-x-3 p-2.5 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition">
+              <div class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <p class="text-xs font-bold text-slate-800 truncate">{{ this.action }}</p>
+                  <span class="text-[11px] text-slate-400 font-mono">{{formatDateTime this.createdAt}}</span>
+                </div>
+                <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">{{ this.description }}</p>
+                <div class="flex items-center space-x-2 mt-1 text-[10px] text-slate-400">
+                  <span>User: <strong class="text-slate-600">{{ this.user_name }}</strong></span>
+                  <span>&bull;</span>
+                  <span>IP: {{ this.ip_address }}</span>
+                </div>
+              </div>
+            </div>
+            {{else}}
+            <p class="text-xs text-slate-500 text-center py-6">No recent system activities logged.</p>
+            {{/each}}
+          </div>
+        </div>
+
+        <!-- Recent Administrative Actions -->
+        <div class="jms-card p-5">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Recent Administrative Actions</h3>
+              <p class="text-xs text-slate-500">Operations executed by System Administrator</p>
+            </div>
+            <span class="px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-800 rounded border border-amber-200">Admin Actions</span>
+          </div>
+
+          <div class="space-y-3">
+            {{#each recentAdminActions}}
+            <div class="p-3 rounded-lg border border-slate-200 bg-white hover:shadow-sm transition">
+              <div class="flex items-center justify-between mb-1">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 text-amber-400">
+                  {{ this.action }}
+                </span>
+                <span class="text-[11px] text-slate-400">{{formatDateTime this.createdAt}}</span>
+              </div>
+              <p class="text-xs font-medium text-slate-700 leading-snug">{{ this.description }}</p>
+              <div class="mt-2 text-[10px] text-slate-500 flex items-center justify-between border-t border-slate-100 pt-1.5">
+                <span>Target: <strong>{{ this.affected_table }} #{{ this.affected_id }}</strong></span>
+                <span class="text-slate-400 font-mono">By {{ this.user_name }}</span>
+              </div>
+            </div>
+            {{else}}
+            <p class="text-xs text-slate-500 text-center py-6">No administrative actions recorded yet.</p>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+
+  <!-- Chart.js Initialization Scripts with Real MySQL Data -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Monthly PDL Admission Chart
+      const monthlyLabels = {{{ chartData.monthlyLabels }}};
+      const monthlyCounts = {{{ chartData.monthlyCounts }}};
+
+      const ctxMonthly = document.getElementById("monthlyAdmissionChart")?.getContext("2d");
+      if (ctxMonthly && monthlyLabels.length) {
+        new Chart(ctxMonthly, {
+          type: "line",
+          data: {
+            labels: monthlyLabels,
+            datasets: [{
+              label: "Intake Admissions",
+              data: monthlyCounts,
+              borderColor: "#0f172a",
+              backgroundColor: "rgba(15, 23, 42, 0.08)",
+              borderWidth: 2.5,
+              tension: 0.3,
+              fill: true,
+              pointBackgroundColor: "#f59e0b",
+              pointBorderColor: "#0f172a",
+              pointRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, ticks: { precision: 0 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      }
+
+      // 2. Admission vs Release Bar Chart
+      const avrLabels = {{{ chartData.avrLabels }}};
+      const avrAdmissions = {{{ chartData.avrAdmissions }}};
+      const avrReleases = {{{ chartData.avrReleases }}};
+
+      const ctxAvr = document.getElementById("admissionReleaseChart")?.getContext("2d");
+      if (ctxAvr && avrLabels.length) {
+        new Chart(ctxAvr, {
+          type: "bar",
+          data: {
+            labels: avrLabels,
+            datasets: [
+              {
+                label: "Admissions",
+                data: avrAdmissions,
+                backgroundColor: "#1e293b",
+                borderRadius: 4
+              },
+              {
+                label: "Releases",
+                data: avrReleases,
+                backgroundColor: "#10b981",
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: "top" } },
+            scales: {
+              y: { beginAtZero: true, ticks: { precision: 0 } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      }
+
+      // 3. Population Status Doughnut Chart
+      const statusLabels = {{{ chartData.statusLabels }}};
+      const statusCounts = {{{ chartData.statusCounts }}};
+
+      const ctxPop = document.getElementById("populationTrendChart")?.getContext("2d");
+      if (ctxPop && statusLabels.length) {
+        new Chart(ctxPop, {
+          type: "doughnut",
+          data: {
+            labels: statusLabels,
+            datasets: [{
+              data: statusCounts,
+              backgroundColor: ["#0f172a", "#3b82f6", "#f59e0b", "#10b981", "#8b5cf6", "#ec4899"],
+              borderWidth: 2,
+              borderColor: "#ffffff"
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: "right", labels: { boxWidth: 12, font: { size: 11 } } }
+            }
+          }
+        });
+      }
+
+      // 4. Personnel Category Polar/Pie Chart
+      const personnelLabels = {{{ chartData.personnelLabels }}};
+      const personnelCounts = {{{ chartData.personnelCounts }}};
+
+      const ctxPersonnel = document.getElementById("personnelChart")?.getContext("2d");
+      if (ctxPersonnel && personnelLabels.length) {
+        new Chart(ctxPersonnel, {
+          type: "pie",
+          data: {
+            labels: personnelLabels,
+            datasets: [{
+              data: personnelCounts,
+              backgroundColor: ["#d97706", "#2563eb", "#475569", "#059669", "#7c3aed"],
+              borderWidth: 2,
+              borderColor: "#ffffff"
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: "right", labels: { boxWidth: 12, font: { size: 11 } } }
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

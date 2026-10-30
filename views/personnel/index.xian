@@ -1,0 +1,197 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Personnel Management</h2>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Manage jail custodial, legal, booking, and medical officer profiles (Admin-exclusive control)</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <a href="/reports/personnel-accounts" class="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold rounded-lg shadow-sm transition inline-flex items-center space-x-1.5">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            <span>Personnel Report</span>
+          </a>
+          <a href="/personnel/create" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded-lg shadow transition inline-flex items-center space-x-1.5 border border-slate-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            <span>Add Personnel Account</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Filters & Search Bar -->
+      <div class="jms-card p-4">
+        <form method="GET" action="/personnel" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <!-- Search -->
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </span>
+            <input 
+              type="text" 
+              name="search" 
+              value="{{ search }}" 
+              placeholder="Search name, badge, email..." 
+              class="w-full pl-9 pr-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50"
+            />
+          </div>
+
+          <!-- Category Filter -->
+          <div>
+            <select name="category" onchange="this.form.submit()" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50 text-slate-700">
+              <option value="">All Categories (5 Types)</option>
+              {{#each categories}}
+              <option value="{{ this }}" {{#if (eq ../selectedCategory this)}}selected{{/if}}>{{ this }}</option>
+              {{/each}}
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <select name="status" onchange="this.form.submit()" class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50 text-slate-700">
+              <option value="">All Account Statuses</option>
+              <option value="active" {{#if (eq selectedStatus 'active')}}selected{{/if}}>Active</option>
+              <option value="inactive" {{#if (eq selectedStatus 'inactive')}}selected{{/if}}>Inactive (Deactivated)</option>
+              <option value="locked" {{#if (eq selectedStatus 'locked')}}selected{{/if}}>Locked</option>
+            </select>
+          </div>
+
+          <!-- Submit / Reset -->
+          <div class="flex items-center space-x-2">
+            <button type="submit" class="flex-1 py-1.5 px-3 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-700 transition">
+              Apply Filter
+            </button>
+            <a href="/personnel" class="py-1.5 px-3 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-300 transition">
+              Reset
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Personnel Data Table -->
+      <div class="jms-card overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            Personnel Directory ({{ totalCount }} Records)
+          </span>
+          <span class="text-xs text-slate-500">Page {{ currentPage }} of {{ totalPages }}</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="jms-table">
+            <thead>
+              <tr>
+                <th>Badge No.</th>
+                <th>Rank & Full Name</th>
+                <th>Category</th>
+                <th>Email & Phone</th>
+                <th>Status</th>
+                <th>Date Enrolled</th>
+                <th>Last Login</th>
+                <th class="text-right">Administrative Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each personnelList}}
+              <tr>
+                <td class="font-mono font-bold text-slate-900">{{ this.badge_number }}</td>
+                <td>
+                  <a href="/personnel/{{ this.id }}" class="font-bold text-slate-900 hover:text-blue-700">
+                    {{ this.rank }} {{ this.first_name }} {{ this.last_name }}
+                  </a>
+                  <span class="block text-[11px] text-slate-500">{{ this.rank }}</span>
+                </td>
+                <td>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
+                    {{ this.category }}
+                  </span>
+                </td>
+                <td>
+                  <div class="text-xs font-medium text-slate-800">{{ this.email }}</div>
+                  <div class="text-[11px] text-slate-500">{{ this.phone }}</div>
+                </td>
+                <td>
+                  {{statusBadge this.status}}
+                </td>
+                <td class="text-xs text-slate-600 font-mono">{{formatDate this.createdAt}}</td>
+                <td class="text-xs text-slate-500">
+                  {{#if this.last_login}}
+                    {{formatDate this.last_login}}
+                  {{else}}
+                    <span class="text-slate-400 italic">Never</span>
+                  {{/if}}
+                </td>
+                <td class="text-right">
+                  <div class="inline-flex items-center space-x-1.5">
+                    <a href="/personnel/{{ this.id }}" class="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded" title="View Profile">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </a>
+                    <a href="/personnel/{{ this.id }}/edit" class="p-1.5 text-slate-600 hover:text-blue-700 hover:bg-blue-50 rounded" title="Edit Profile">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </a>
+
+                    <!-- Status Toggle (Activate/Deactivate) Form -->
+                    <form method="POST" action="/personnel/{{ this.id }}/toggle-status" class="inline" onsubmit="return confirm('Toggle status for officer {{ this.first_name }} {{ this.last_name }}?');">
+                      <button type="submit" class="p-1.5 {{#if (eq this.status 'active')}}text-amber-600 hover:bg-amber-50{{else}}text-emerald-600 hover:bg-emerald-50{{/if}} rounded" title="{{#if (eq this.status 'active')}}Deactivate Account{{else}}Activate Account{{/if}}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                      </button>
+                    </form>
+
+                    <!-- Lock / Unlock Form -->
+                    <form method="POST" action="/personnel/{{ this.id }}/toggle-lock" class="inline" onsubmit="return confirm('Toggle account lock state for officer {{ this.first_name }} {{ this.last_name }}?');">
+                      <button type="submit" class="p-1.5 {{#if (eq this.status 'locked')}}text-rose-600 hover:bg-rose-50{{else}}text-slate-400 hover:bg-slate-100{{/if}} rounded" title="{{#if (eq this.status 'locked')}}Unlock Account{{else}}Lock Account{{/if}}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                      </button>
+                    </form>
+
+                    <!-- Reset Password Form -->
+                    <form method="POST" action="/personnel/{{ this.id }}/reset-password" class="inline" onsubmit="return confirm('Generate a temporary password reset for {{ this.first_name }} {{ this.last_name }}?');">
+                      <button type="submit" class="p-1.5 text-purple-600 hover:bg-purple-50 rounded" title="Reset Password">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {{else}}
+              <tr>
+                <td colspan="8" class="text-center py-10 text-slate-500">
+                  <p class="text-sm font-semibold">No personnel records found matching current criteria.</p>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        {{#if (gt totalPages 1)}}
+        <div class="px-5 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+          <div class="text-xs text-slate-500">
+            Showing page {{ currentPage }} of {{ totalPages }}
+          </div>
+          <div class="flex items-center space-x-1">
+            {{#if hasPrev}}
+            <a href="/personnel?page={{ prevPage }}&search={{ search }}&category={{ selectedCategory }}&status={{ selectedStatus }}" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100">Previous</a>
+            {{/if}}
+            {{#if hasNext}}
+            <a href="/personnel?page={{ nextPage }}&search={{ search }}&category={{ selectedCategory }}&status={{ selectedStatus }}" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100">Next</a>
+            {{/if}}
+          </div>
+        </div>
+        {{/if}}
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+</body>
+</html>
+

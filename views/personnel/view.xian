@@ -1,0 +1,188 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <div>
+          <div class="flex items-center space-x-2 text-xs text-slate-500 mb-1">
+            <a href="/personnel" class="hover:text-blue-600">Personnel Management</a>
+            <span>&rsaquo;</span>
+            <span class="text-slate-800 font-semibold">{{ personnel.badge_number }}</span>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">{{ personnel.rank }} {{ personnel.first_name }} {{ personnel.last_name }}</h2>
+          <p class="text-xs text-slate-500 font-medium">Category: <span class="text-slate-800 font-bold">{{ personnel.category }}</span> &bull; Badge: <span class="font-mono font-bold text-slate-800">{{ personnel.badge_number }}</span></p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <a href="/personnel" class="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-50">&larr; Back to Directory</a>
+          <a href="/personnel/{{ personnel.id }}/edit" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-sm transition inline-flex items-center space-x-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            <span>Edit Profile</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Officer Dossier Card -->
+        <div class="jms-card p-6 lg:col-span-1 space-y-6">
+          <div class="text-center pb-6 border-b border-slate-200">
+            <div class="w-24 h-24 rounded-full bg-slate-800 text-amber-400 mx-auto flex items-center justify-center font-bold text-2xl border-4 border-amber-500/80 shadow-md mb-3">
+              {{ personnel.first_name.[0] }}{{ personnel.last_name.[0] }}
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">{{ personnel.rank }} {{ personnel.first_name }} {{ personnel.last_name }}</h3>
+            <span class="inline-block px-3 py-1 mt-2 text-xs font-bold rounded-full bg-slate-100 text-slate-800 border border-slate-200">
+              {{ personnel.category }}
+            </span>
+            <div class="mt-3">
+              {{statusBadge personnel.status}}
+            </div>
+          </div>
+
+          <!-- Quick Telemetry -->
+          <div class="space-y-3 text-xs">
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Badge Number:</span>
+              <span class="font-mono font-bold text-slate-900">{{ personnel.badge_number }}</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Official Email:</span>
+              <span class="font-semibold text-slate-800">{{ personnel.email }}</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Phone Number:</span>
+              <span class="text-slate-800">{{ personnel.phone }}</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Account Created:</span>
+              <span class="font-mono text-slate-700">{{formatDate personnel.createdAt}}</span>
+            </div>
+            <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+              <span class="text-slate-500 font-medium">Last Login:</span>
+              <span class="font-mono text-slate-700">
+                {{#if personnel.last_login}}{{formatDateTime personnel.last_login}}{{else}}<em class="text-slate-400">Never</em>{{/if}}
+              </span>
+            </div>
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-slate-500 font-medium">Portal Access:</span>
+              <span class="text-amber-800 font-semibold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Admin-Managed Only</span>
+            </div>
+          </div>
+
+          <!-- Administrative Quick Control Actions -->
+          <div class="pt-4 border-t border-slate-200 space-y-2">
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Administrative Controls</h4>
+
+            <!-- Toggle Activation -->
+            <form method="POST" action="/personnel/{{ personnel.id }}/toggle-status" onsubmit="return confirm('Toggle status for this account?');">
+              <button type="submit" class="w-full py-2 px-3 text-xs font-bold rounded-lg border {{#if (eq personnel.status 'active')}}bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300{{else}}bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300{{/if}} transition flex items-center justify-center space-x-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                <span>{{#if (eq personnel.status 'active')}}Deactivate Personnel Account{{else}}Activate Personnel Account{{/if}}</span>
+              </button>
+            </form>
+
+            <!-- Toggle Lock -->
+            <form method="POST" action="/personnel/{{ personnel.id }}/toggle-lock" onsubmit="return confirm('Toggle account lock?');">
+              <button type="submit" class="w-full py-2 px-3 text-xs font-bold rounded-lg border {{#if (eq personnel.status 'locked')}}bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300{{else}}bg-rose-50 hover:bg-rose-100 text-rose-800 border-rose-300{{/if}} transition flex items-center justify-center space-x-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                <span>{{#if (eq personnel.status 'locked')}}Unlock Account{{else}}Lock Account (Security){{/if}}</span>
+              </button>
+            </form>
+
+            <!-- Reset Password -->
+            <form method="POST" action="/personnel/{{ personnel.id }}/reset-password" onsubmit="return confirm('Issue temporary password reset for officer?');">
+              <button type="submit" class="w-full py-2 px-3 text-xs font-bold rounded-lg bg-slate-900 hover:bg-slate-800 text-amber-400 transition flex items-center justify-center space-x-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                <span>Generate Temporary Password</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Detailed Profile & Historical Activity -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Information Tabs / Sections -->
+          <div class="jms-card p-6">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200">
+              Complete Officer Profile & Deployment Info
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <span class="text-slate-500 font-medium block">Legal Full Name</span>
+                <span class="text-sm font-bold text-slate-900">{{ personnel.last_name }}, {{ personnel.first_name }} {{ personnel.middle_name }}</span>
+              </div>
+
+              <div>
+                <span class="text-slate-500 font-medium block">Rank / Title</span>
+                <span class="text-sm font-bold text-slate-900">{{ personnel.rank }}</span>
+              </div>
+
+              <div>
+                <span class="text-slate-500 font-medium block">Date of Birth</span>
+                <span class="text-sm font-semibold text-slate-800">{{formatDate personnel.date_of_birth}}</span>
+              </div>
+
+              <div>
+                <span class="text-slate-500 font-medium block">Date Hired / Appointed</span>
+                <span class="text-sm font-semibold text-slate-800">{{formatDate personnel.date_hired}}</span>
+              </div>
+
+              <div class="sm:col-span-2">
+                <span class="text-slate-500 font-medium block">Residential Address</span>
+                <span class="text-sm text-slate-800">{{ personnel.address }}</span>
+              </div>
+
+              <div class="sm:col-span-2">
+                <span class="text-slate-500 font-medium block">Emergency Contact</span>
+                <span class="text-sm font-semibold text-slate-800">{{ personnel.emergency_contact }}</span>
+              </div>
+
+              <div class="sm:col-span-2 bg-slate-50 p-3 rounded border border-slate-200">
+                <span class="text-slate-500 font-medium block mb-1">Administrative Notes & Assignment Instructions</span>
+                <p class="text-xs text-slate-700 leading-relaxed">{{ personnel.notes }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity / Audit History for this Officer -->
+          <div class="jms-card p-6">
+            <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 pb-2 border-b border-slate-200 flex items-center justify-between">
+              <span>Audit Trail Affecting This Officer</span>
+              <span class="text-xs text-slate-500 font-normal">Read-only records</span>
+            </h3>
+
+            <div class="space-y-3">
+              {{#each activities}}
+              <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-start justify-between">
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900 text-amber-400">
+                      {{ this.action }}
+                    </span>
+                    <span class="text-xs font-bold text-slate-800">{{ this.description }}</span>
+                  </div>
+                  <div class="text-[11px] text-slate-500 mt-1">
+                    Executed by <strong>{{ this.user_name }}</strong> &bull; IP: {{ this.ip_address }}
+                  </div>
+                </div>
+                <span class="text-[11px] text-slate-400 font-mono">{{formatDateTime this.createdAt}}</span>
+              </div>
+              {{else}}
+              <p class="text-xs text-slate-500 text-center py-6">No specific modifications recorded yet for this officer.</p>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,127 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Notification Center</h2>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">Automated security alerts, custodial notices, backup reminders, and critical events</p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          {{#if (gt unreadCount 0)}}
+          <form method="POST" action="/notifications/read-all">
+            <button type="submit" class="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold rounded-lg shadow-sm transition inline-flex items-center space-x-1.5">
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+              <span>Mark All as Read ({{ unreadCount }})</span>
+            </button>
+          </form>
+          {{/if}}
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex items-center space-x-2 border-b border-slate-200 pb-2 overflow-x-auto">
+        <a href="/notifications" class="px-3 py-1.5 rounded-lg text-xs font-bold {{#if (and (eq selectedType '') (eq selectedStatus ''))}}bg-slate-900 text-amber-400{{else}}bg-white text-slate-600 hover:bg-slate-100 border border-slate-200{{/if}}">
+          All Notifications ({{ notifications.length }})
+        </a>
+        <a href="/notifications?status=unread" class="px-3 py-1.5 rounded-lg text-xs font-bold {{#if (eq selectedStatus 'unread')}}bg-slate-900 text-amber-400{{else}}bg-white text-slate-600 hover:bg-slate-100 border border-slate-200{{/if}}">
+          Unread Alerts {{#if (gt unreadCount 0)}}<span class="ml-1 px-1.5 py-0.2 bg-rose-600 text-white rounded-full text-[10px]">{{ unreadCount }}</span>{{/if}}
+        </a>
+        <a href="/notifications?type=security" class="px-3 py-1.5 rounded-lg text-xs font-bold {{#if (eq selectedType 'security')}}bg-slate-900 text-amber-400{{else}}bg-white text-slate-600 hover:bg-slate-100 border border-slate-200{{/if}}">
+          Security Alerts
+        </a>
+        <a href="/notifications?type=backup" class="px-3 py-1.5 rounded-lg text-xs font-bold {{#if (eq selectedType 'backup')}}bg-slate-900 text-amber-400{{else}}bg-white text-slate-600 hover:bg-slate-100 border border-slate-200{{/if}}">
+          Backup Reminders
+        </a>
+        <a href="/notifications?type=pdl" class="px-3 py-1.5 rounded-lg text-xs font-bold {{#if (eq selectedType 'pdl')}}bg-slate-900 text-amber-400{{else}}bg-white text-slate-600 hover:bg-slate-100 border border-slate-200{{/if}}">
+          PDL Custody
+        </a>
+        <a href="/notifications?type=personnel" class="px-3 py-1.5 rounded-lg text-xs font-bold {{#if (eq selectedType 'personnel')}}bg-slate-900 text-amber-400{{else}}bg-white text-slate-600 hover:bg-slate-100 border border-slate-200{{/if}}">
+          Personnel Updates
+        </a>
+      </div>
+
+      <!-- Notifications List -->
+      <div class="space-y-3 max-w-4xl">
+        {{#each notifications}}
+        <div class="jms-card p-4 transition {{#if this.is_read}}bg-white opacity-80{{else}}bg-white border-l-4 border-amber-500 shadow-sm{{/if}} flex items-start justify-between">
+          <div class="flex items-start space-x-3.5 flex-1 pr-4">
+            <!-- Icon by Type -->
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5
+              {{#if (eq this.type 'security')}}bg-rose-100 text-rose-700
+              {{else if (eq this.type 'backup')}}bg-purple-100 text-purple-700
+              {{else if (eq this.type 'pdl')}}bg-blue-100 text-blue-700
+              {{else if (eq this.type 'personnel')}}bg-amber-100 text-amber-700
+              {{else}}bg-slate-100 text-slate-700{{/if}}">
+              {{#if (eq this.type 'security')}}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              {{else if (eq this.type 'backup')}}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+              {{else if (eq this.type 'pdl')}}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+              {{else}}
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              {{/if}}
+            </div>
+
+            <div>
+              <div class="flex items-center space-x-2">
+                <h4 class="text-sm font-bold text-slate-900 leading-snug">{{ this.title }}</h4>
+                <span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-bold uppercase tracking-wider
+                  {{#if (eq this.type 'security')}}bg-rose-100 text-rose-800
+                  {{else if (eq this.type 'backup')}}bg-purple-100 text-purple-800
+                  {{else}}bg-slate-100 text-slate-700{{/if}}">
+                  {{ this.type }}
+                </span>
+                {{#unless this.is_read}}
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                {{/unless}}
+              </div>
+
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ this.message }}</p>
+
+              <div class="flex items-center space-x-3 mt-2 text-[11px] text-slate-400 font-mono">
+                <span>{{formatDateTime this.createdAt}}</span>
+                {{#if this.link}}
+                <span>&bull;</span>
+                <a href="{{ this.link }}" class="text-blue-600 hover:text-blue-800 font-sans font-semibold">Inspect Target &rarr;</a>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+
+          <!-- Mark As Read Button -->
+          <div class="flex items-center space-x-2">
+            {{#unless this.is_read}}
+            <form method="POST" action="/notifications/{{ this.id }}/read">
+              <button type="submit" class="px-2.5 py-1 text-[11px] font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 transition">
+                Mark Read
+              </button>
+            </form>
+            {{else}}
+            <span class="text-[11px] text-slate-400 italic">Read</span>
+            {{/unless}}
+          </div>
+        </div>
+        {{else}}
+        <div class="jms-card p-12 text-center text-slate-500">
+          <svg class="w-12 h-12 text-slate-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+          <p class="text-sm font-semibold">No notifications available in this view.</p>
+        </div>
+        {{/each}}
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+</body>
+</html>
+

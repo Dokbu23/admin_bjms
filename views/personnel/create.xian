@@ -1,0 +1,133 @@
+{{> head}}
+<body class="bg-slate-100 font-sans text-slate-800 flex h-screen overflow-hidden">
+  {{> sidebar}}
+
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    {{> navbar}}
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 space-y-6">
+      {{> toast}}
+
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <div>
+          <div class="flex items-center space-x-2 text-xs text-slate-500 mb-1">
+            <a href="/personnel" class="hover:text-blue-600">Personnel Management</a>
+            <span>&rsaquo;</span>
+            <span class="text-slate-800 font-semibold">New Account</span>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Add Jail Personnel Account</h2>
+          <p class="text-xs text-slate-500">Enroll new officer profile under administrative supervision</p>
+        </div>
+        <a href="/personnel" class="px-3.5 py-1.5 bg-white border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-50">&larr; Back to List</a>
+      </div>
+
+      <div class="jms-card p-6 max-w-4xl">
+        <form method="POST" action="/personnel" class="space-y-6">
+          <!-- Mandatory Category & Assignment -->
+          <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-200/60 mb-6">
+            <h3 class="text-xs font-bold text-amber-900 uppercase tracking-wider mb-3">Official Category Assignment</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Personnel Category <span class="text-rose-600">*</span></label>
+                <select name="category" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
+                  <option value="">-- Select Personnel Category --</option>
+                  {{#each categories}}
+                  <option value="{{ this }}">{{ this }}</option>
+                  {{/each}}
+                </select>
+                <p class="text-[11px] text-slate-500 mt-1">Note: Role category is administrative-only; external login is disabled.</p>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Rank / Designation <span class="text-rose-600">*</span></label>
+                <input type="text" name="rank" placeholder="e.g. Jail Inspector (J/INSP), SJO1, Dr." required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Basic Identification -->
+          <div>
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3 pb-1 border-b border-slate-200">Personnel Identification</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Badge Number <span class="text-rose-600">*</span></label>
+                <input type="text" name="badge_number" placeholder="e.g. P-BK-2026-01" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">First Name <span class="text-rose-600">*</span></label>
+                <input type="text" name="first_name" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Middle Name</label>
+                <input type="text" name="middle_name" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Last Name <span class="text-rose-600">*</span></label>
+                <input type="text" name="last_name" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact & Communications -->
+          <div>
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3 pb-1 border-b border-slate-200">Contact & Employment Info</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Official Email Address <span class="text-rose-600">*</span></label>
+                <input type="email" name="email" placeholder="officer@bjmp.gov.ph" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
+                <input type="text" name="phone" placeholder="+63 917 000 0000" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Birthdate</label>
+                <input type="date" name="date_of_birth" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Date Hired / Appointed</label>
+                <input type="date" name="date_hired" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Address & Emergency Contact -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Emergency Contact Information</label>
+              <input type="text" name="emergency_contact" placeholder="Name, Relationship & Mobile No." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Residential Address</label>
+              <input type="text" name="address" placeholder="City, Province" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Administrative Notes / Specific Assignment</label>
+            <textarea name="notes" rows="2" placeholder="e.g. Station assignment, special duties, clearances..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"></textarea>
+          </div>
+
+          <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-200">
+            <a href="/personnel" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-50">Cancel</a>
+            <button type="submit" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold rounded-lg shadow transition">
+              Create Personnel Account
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    {{> footer}}
+  </div>
+</body>
+</html>
+
